@@ -1,7 +1,7 @@
 {
-  "name": "graphicdesignelite",
+  "name": "mycorpmarketing",
   "version": "1.0.0",
-  "description": "Graphic Design Elite Website",
+  "description": "MYC Front End Production Optimization",
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

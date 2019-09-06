@@ -71,6 +71,11 @@ gulp.task('js', function() {
     .pipe(concat('master.js'))
     .pipe(gulp.dest('../js'))
 });
+gulp.task('jshint', function() {
+    gulp.src('../js/master.js')
+      .pipe(jshint())
+      .pipe(jshint.reporter('default'));
+});
 
 gulp.task('scss-lint', function() {
   gulp.src('scss/**/*.scss')
@@ -78,8 +83,8 @@ gulp.task('scss-lint', function() {
     .pipe(scsslint());
 });
 
-
-gulp.task("revision:rename", ["css"], function(){
+//css rename for cache bust
+gulp.task("revision:renameCss", ["css"], function(){
   return gulp.src(["../css/global.css"])
   .pipe(rev())
   .pipe(gulp.dest('../css'))
@@ -88,23 +93,35 @@ gulp.task("revision:rename", ["css"], function(){
   .pipe(gulp.dest('../css'))
 });
 
-gulp.task("revision:updateReferences", ["css","revision:rename"], function(){
+gulp.task("revision:updateReferencesCss", ["css","revision:renameCss"], function(){
    return gulp.src(["../css/manifest.json","../templates/common/header_includes.jsp"])
    .pipe(collect({ replaceReved: true }))
    .pipe(gulp.dest("../templates/common/"))
 });
 
+//js rename for cache bust
+gulp.task("revision:renameJs", ["js"], function(){
+    return gulp.src(["../js/master.js"])
+    .pipe(rev())
+    .pipe(gulp.dest('../js'))
+    .pipe(rev.manifest({ path: "manifest.json" }))
+    .pipe(revdel({ dest: '../js', force: true }))
+    .pipe(gulp.dest('../js'))
+  });
+  
+gulp.task("revision:updateReferencesJs", ["js","revision:renameJs"], function(){
+     return gulp.src(["../js/manifest.json","../templates/common/footer_includes.jsp"])
+     .pipe(collect({ replaceReved: true }))
+     .pipe(gulp.dest("../templates/common/"))
+  });
 
-gulp.task('jshint', function() {
-  gulp.src('../js/master.js')
-    .pipe(jshint())
-    .pipe(jshint.reporter('default'));
-});
+
+
 
 gulp.task('watch', function() {
-  gulp.watch('../css/global-edit.css', ['css', 'revision:rename', 'revision:updateReferences']);
-  gulp.watch('../js/master-edit.js', ['jshint', 'js']);
+  gulp.watch('../css/global-edit.css', ['css', 'revision:renameCss', 'revision:updateReferencesCss']);
+  gulp.watch('../js/master-edit.js', ['jshint', 'js', 'revision:renameJs', 'revision:updateReferencesJs']);
 
 });
 
-gulp.task('default', ['css', 'revision:rename', 'revision:updateReferences', 'js', 'watch']);
+gulp.task('default', ['css', 'revision:renameCss', 'revision:updateReferencesCss', 'js', 'revision:renameJs', 'revision:updateReferencesJs', 'watch']);
