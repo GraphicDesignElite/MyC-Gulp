@@ -87,14 +87,14 @@ gulp.task('scss-lint', function() {
 gulp.task("revision:renameCss", ["css"], function(){
   return gulp.src(["../css/global.css"])
   .pipe(rev())
-  .pipe(gulp.dest('../css'))
+  .pipe(gulp.dest('../cdn/css'))
   .pipe(rev.manifest({ path: "manifest.json" }))
-  .pipe(revdel({ dest: '../css', force: true }))
-  .pipe(gulp.dest('../css'))
+  .pipe(revdel({ dest: '../cdn/css', force: true }))
+  .pipe(gulp.dest('../cdn/css'))
 });
 
 gulp.task("revision:updateReferencesCss", ["css","revision:renameCss"], function(){
-   return gulp.src(["../css/manifest.json","../templates/common/header_includes.jsp"])
+   return gulp.src(["../cdn/css/manifest.json","../templates/common/header_includes.jsp"])
    .pipe(collect({ replaceReved: true }))
    .pipe(gulp.dest("../templates/common/"))
 });
@@ -103,14 +103,14 @@ gulp.task("revision:updateReferencesCss", ["css","revision:renameCss"], function
 gulp.task("revision:renameJs", ["js"], function(){
     return gulp.src(["../js/master.js"])
     .pipe(rev())
-    .pipe(gulp.dest('../js'))
+    .pipe(gulp.dest('../cdn/js'))
     .pipe(rev.manifest({ path: "manifest.json" }))
-    .pipe(revdel({ dest: '../js', force: true }))
-    .pipe(gulp.dest('../js'))
+    .pipe(revdel({ dest: '../cdn/js', force: true }))
+    .pipe(gulp.dest('../cdn/js'))
   });
   
 gulp.task("revision:updateReferencesJs", ["js","revision:renameJs"], function(){
-     return gulp.src(["../js/manifest.json","../templates/common/footer_includes.jsp"])
+     return gulp.src(["../cdn/js/manifest.json","../templates/common/footer_includes.jsp"])
      .pipe(collect({ replaceReved: true }))
      .pipe(gulp.dest("../templates/common/"))
   });
