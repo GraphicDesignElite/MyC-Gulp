@@ -1,4 +1,4 @@
-aws s3 sync . s3://mycorpcdn/www --profile mycorp --cache-control max-age=365000000 
+aws s3 sync . s3://mycorpcdn/www --profile mycorp --cache-control max-age=365000000 --dryrun 
 
 --delete - dont use because this will remove current file before we are ready to go live
 --dryrun to see what will happen first
